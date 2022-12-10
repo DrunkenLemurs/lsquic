@@ -95,6 +95,7 @@ ENDIF()
 
 #MSVC
 ELSE()
+SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /W4")     # set warning level BEFORE disabling any warnings (needed by clang-cl)
 SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4100")	# unreferenced formal parameter
 SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4115")	# unnamed type definition in parentheses
 SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4116")	# named type definition in parentheses
@@ -113,7 +114,10 @@ SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4459")	# hide global declaration
 SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4706")	# assignment within conditional expression
 SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4090")	# different 'const' qualifier (TODO: debug ls-sfparser.c)
 SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4305")	# truncation from double to float
-SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} -W4 -WX -Zi -DWIN32_LEAN_AND_MEAN -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS -I${CMAKE_CURRENT_SOURCE_DIR}/wincompat")
+IF("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang" AND "${CMAKE_C_COMPILER_FRONTEND_VARIANT}" STREQUAL "MSVC") # clang-cl
+    SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} -Wno-microsoft-enum-forward-reference") # forward references to 'enum' types are a Microsoft extension
+ENDIF()
+SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} -Zi -DWIN32_LEAN_AND_MEAN -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS -I${CMAKE_CURRENT_SOURCE_DIR}/wincompat")
 IF(LSQUIC_SHARED_LIB)
     SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} -DLSQUIC_SHARED_LIB")
 ENDIF()

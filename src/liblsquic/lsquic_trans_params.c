@@ -237,17 +237,16 @@ update_cid_bits (unsigned bits[][3], enum transport_param_id tpi,
                                                     const lsquic_cid_t *cid)
 {
     bits[tpi][0] = vint_val2bits(enum_2_tpi_val[tpi]);
-#if __GNUC__
-#pragma GCC diagnostic ignored "-Wunknown-pragmas"
+#if __clang__ || (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) /* clang OR GNUC >= 4.6 */
+#pragma GCC diagnostic push
+#endif
 #if __clang__
 #pragma GCC diagnostic ignored "-Wtautological-constant-out-of-range-compare"
 #else
 #pragma GCC diagnostic ignored "-Wtype-limits"
 #endif
-#endif
     bits[tpi][1] = vint_val2bits(cid->len);
-#if __GNUC__
-#pragma GCC diagnostic pop
+#if defined(__clang__) || (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) /* clang OR GNUC >= 4.6 */
 #pragma GCC diagnostic pop
 #endif
     return (1u << bits[tpi][0]) + (1u << bits[tpi][1]) + cid->len;
@@ -792,18 +791,17 @@ lsquic_tp_encode_27 (const struct transport_params *params, int is_server,
         {
             bits[TPI_ORIGINAL_DEST_CID][0]
                     = vint_val2bits(enum_2_tpi_val[TPI_ORIGINAL_DEST_CID]);
-#if __GNUC__
-#pragma GCC diagnostic ignored "-Wunknown-pragmas"
+#if __clang__ || (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) /* clang OR GNUC >= 4.6 */
+#pragma GCC diagnostic push
+#endif
 #if __clang__
 #pragma GCC diagnostic ignored "-Wtautological-constant-out-of-range-compare"
 #else
 #pragma GCC diagnostic ignored "-Wtype-limits"
 #endif
-#endif
             bits[TPI_ORIGINAL_DEST_CID][1]
                     = vint_val2bits(params->tp_original_dest_cid.len);
-#if __GNUC__
-#pragma GCC diagnostic pop
+#if __clang__ || (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) /* clang OR GNUC >= 4.6 */
 #pragma GCC diagnostic pop
 #endif
             need += (1 << bits[TPI_ORIGINAL_DEST_CID][0])
