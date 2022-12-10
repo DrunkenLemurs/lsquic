@@ -9,6 +9,7 @@ OPTION(LSQUIC_BIN "Compile example binaries that use the library" ON)
 OPTION(LSQUIC_TESTS "Compile library unit tests" ON)
 OPTION(LSQUIC_SHARED_LIB "Compile as shared librarry" OFF)
 OPTION(LSQUIC_DEVEL "Compile in development mode" OFF)
+OPTION(LSQUIC_DOCS "Generate documentation" OFF)
 
 INCLUDE(GNUInstallDirs)
 
@@ -318,16 +319,17 @@ IF(LSQUIC_TESTS AND CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_subdirectory(tests)
 ENDIF()
 
-
-FIND_PROGRAM(SPHINX NAMES sphinx-build)
-IF(SPHINX)
-    ADD_CUSTOM_TARGET(docs
-        ${SPHINX} -b html
-        docs
-        docs/_build
-    )
-ELSE()
-    MESSAGE(STATUS "sphinx-build not found: docs won't be made")
+IF(LSQUIC_DOCS)
+    FIND_PROGRAM(SPHINX NAMES sphinx-build)
+    IF(SPHINX)
+        ADD_CUSTOM_TARGET(docs
+            ${SPHINX} -b html
+            docs
+            docs/_build
+        )
+    ELSE()
+        MESSAGE(STATUS "sphinx-build not found: docs won't be made")
+    ENDIF()
 ENDIF()
 
 INSTALL(FILES
