@@ -9,7 +9,7 @@ OPTION(LSQUIC_BIN "Compile example binaries that use the library" ON)
 OPTION(LSQUIC_TESTS "Compile library unit tests" ON)
 OPTION(LSQUIC_SHARED_LIB "Compile as shared librarry" OFF)
 OPTION(LSQUIC_DEVEL "Compile in development mode" OFF)
-OPTION(LSQUIC_DOCS "Generate documentation" OFF)
+OPTION(LSQUIC_DOCS "Generate documentation" ON)
 
 INCLUDE(GNUInstallDirs)
 
@@ -47,8 +47,7 @@ ENDIF()
 
 IF (NOT MSVC)
 
-SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} -Wall -Wextra -Wno-unused-parameter")
-SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} -fno-omit-frame-pointer")
+SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} -Wall -Wextra")
 
 IF(CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9.3)
     SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} -Wno-missing-field-initializers")
@@ -60,7 +59,6 @@ IF(LSQUIC_FIU)
 ENDIF()
 
 IF(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} -O0 -g3")
     IF(CMAKE_C_COMPILER MATCHES "clang" AND
                         NOT "$ENV{TRAVIS}" MATCHES "^true$" AND
                         NOT "$ENV{EXTRA_CFLAGS}" MATCHES "-fsanitize")
@@ -70,7 +68,6 @@ IF(CMAKE_BUILD_TYPE STREQUAL "Debug")
     # Uncomment to enable cleartext protocol mode (no crypto):
     #SET (MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} -DLSQUIC_ENABLE_HANDSHAKE_DISABLE=1")
 ELSE()
-    SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} -O3 -g0")
     # Comment out the following line to compile out debug messages:
     #SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} -DLSQUIC_LOWEST_LOG_LEVEL=LSQ_LOG_INFO")
 ENDIF()
@@ -117,16 +114,14 @@ SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4305")	# truncation from double to floa
 IF("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang" AND "${CMAKE_C_COMPILER_FRONTEND_VARIANT}" STREQUAL "MSVC") # clang-cl
     SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} -Wno-microsoft-enum-forward-reference") # forward references to 'enum' types are a Microsoft extension
 ENDIF()
-SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} -Zi -DWIN32_LEAN_AND_MEAN -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS -I${CMAKE_CURRENT_SOURCE_DIR}/wincompat")
+SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} -DWIN32_LEAN_AND_MEAN -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS -I${CMAKE_CURRENT_SOURCE_DIR}/wincompat")
 IF(LSQUIC_SHARED_LIB)
     SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} -DLSQUIC_SHARED_LIB")
 ENDIF()
 IF(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} -Od")
     #SET (MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} -DFIU_ENABLE=1")
     #SET(LIBS ${LIBS} fiu)
 ELSE()
-    SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} -Ox")
     # Comment out the following line to compile out debug messages:
     #SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} -DLSQUIC_LOWEST_LOG_LEVEL=LSQ_LOG_INFO")
 ENDIF()
@@ -137,10 +132,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  ${MY_CMAKE_FLAGS} $ENV{EXTRA_CFLAGS}")
 
 MESSAGE(STATUS "Compiler flags: ${CMAKE_C_FLAGS}")
 
-find_package(Perl)
-IF(NOT PERL_FOUND)
-    MESSAGE(FATAL_ERROR "Perl not found -- need it to generate source code")
-ENDIF()
+find_package(Perl REQUIRED) # needed for source code generation
 
 IF (MSVC)
     IF(LSQUIC_SHARED_LIB)
