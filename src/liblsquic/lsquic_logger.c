@@ -12,6 +12,7 @@
 #include <string.h>
 #ifndef WIN32
 #include <sys/time.h>
+#include <strings.h>
 #endif
 #include <time.h>
 
@@ -216,9 +217,9 @@ print_timestamp (char *buf, size_t max)
 	localtime_s(&tm, &t);
 	assert(!e);
     }
-#else    
+#else
     localtime_r(&tv.tv_sec, &tm);
-#endif    
+#endif
     if (g_llts == LLTS_YYYYMMDD_HHMMSSUS)
         len = snprintf(buf, max, "%04d-%02d-%02d %02d:%02d:%02d.%06d ",
             tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,

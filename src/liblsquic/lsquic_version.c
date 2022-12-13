@@ -5,8 +5,10 @@
 #include "lsquic_int_types.h"
 #include "lsquic_version.h"
 
-#if _MSC_VER
+#if WIN32
 #include "vc_compat.h"
+#else
+#include <strings.h>
 #endif
 
 
