@@ -93,24 +93,30 @@ ENDIF()
 #MSVC
 ELSE()
 SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /W4")     # set warning level BEFORE disabling any warnings (needed by clang-cl)
+SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4018")	# signed/unsigned mismatch
+SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4090")	# different 'const' qualifier (TODO: debug ls-sfparser.c)
 SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4100")	# unreferenced formal parameter
 SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4115")	# unnamed type definition in parentheses
 SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4116")	# named type definition in parentheses
-SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4146")	# unary minus operator applied to unsigned type, result still unsigned
+SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4127")	# conditional expression is constant
 SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4132")	# const initialization
+SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4146")	# unary minus operator applied to unsigned type, result still unsigned
+SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4152")	# nonstandard extension, function/data pointer conversion in expression
+SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4189") # local variable is initialized but not referenced
 SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4200")	# zero-sized array
 SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4204")	# non-constant aggregate initializer
+SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4214")	# nonstandard extension used: bit field types other than int
+SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4221")	# nonstandard extension used:xx cannot be initialized using address of automatic variable y,
 SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4244")	# integer conversion
 SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4245")	# conversion from 'int' to 'unsigned int', signed/unsigned mismatch
 SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4267")	# integer conversion
-SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4214")	# nonstandard extension used: bit field types other than int
 SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4295")	# array is too small to include a terminating null character
+SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4305")	# truncation from double to float
 SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4334")	# result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
 SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4456")	# hide previous local declaration
 SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4459")	# hide global declaration
 SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4706")	# assignment within conditional expression
-SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4090")	# different 'const' qualifier (TODO: debug ls-sfparser.c)
-SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4305")	# truncation from double to float
+SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} /wd4804")	# '-': unsafe use of type 'bool' in operation
 IF("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang" AND "${CMAKE_C_COMPILER_FRONTEND_VARIANT}" STREQUAL "MSVC") # clang-cl
     SET(MY_CMAKE_FLAGS "${MY_CMAKE_FLAGS} -Wno-microsoft-enum-forward-reference") # forward references to 'enum' types are a Microsoft extension
 ENDIF()
